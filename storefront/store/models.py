@@ -61,6 +61,9 @@ class Address(models.Model):
 
 class Collection(models.Model):
     Title = models.CharField(max_length=255)
+    FeaturedProduct = models.ForeignKey(
+        Product, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
 
 
 class OrderItem(models.Model):
