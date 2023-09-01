@@ -14,6 +14,7 @@ class Product(models.Model):
     Collection = models.ForeignKey(
         "Collection", on_delete=models.PROTECT
     )  # do not others production
+    Promotions = models.ManyToManyField("Promotion")
 
 
 class Customer(models.Model):
@@ -77,3 +78,8 @@ class CartItem(models.Model):
     Cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     Product = models.ForeignKey(Product, on_delete=models.CASCADE)
     Quantity = models.PositiveSmallIntegerField()
+
+
+class Promotion(models.Model):
+    Description = models.CharField(max_length=255)
+    Discount = models.FloatField()
