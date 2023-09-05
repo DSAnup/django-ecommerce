@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product, Order, OrderItem
-from django.db.models import Min, Max, Avg, Count, Sum, Q
+from django.db.models import Min, Max, Avg, Count, Sum, Q, F
 
 # Create your views here.
 
@@ -27,17 +27,26 @@ def say_hello(request):
     queryset2 = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
     # Products: inventory < 10 and not less than price < 20
     queryset2 = Product.objects.filter(Q(inventory__lt=10) & ~Q(unit_price__lt=20))
+    # Products: inventory = price
+    queryset3 = Product.objects.filter(inventory=F("unit_price"))
+    # secondary table
+    queryset3 = Product.objects.filter(inventory=F("collection__id"))
+    querysetSort = Product.objects.order_by("-title", "unit_price")
+    # earliest
+    earliestProduct = Product.objects.earliest("unit_price")
     return render(
         request,
         "hello.html",
         {
             "name": "Anup",
-            "products": list(queryset),
+            "products": list(querysetSort),
             "products1": list(queryset1),
             "products2": list(queryset2),
+            "products3": list(queryset3),
             "totalOrder": orderCount,
             "product1Sold": product1Sold,
             "customer1Order": customer1Order,
             "minPriceCollection3": minPriceCollection3,
+            "earliestProduct": earliestProduct,
         },
     )
