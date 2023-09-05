@@ -34,12 +34,15 @@ def say_hello(request):
     querysetSort = Product.objects.order_by("-title", "unit_price")
     # earliest
     earliestProduct = Product.objects.earliest("unit_price")
+    # limit
+    querysetLimit = Product.objects.all()[:5]
+    querysetLimit = Product.objects.all()[5:15]
     return render(
         request,
         "hello.html",
         {
             "name": "Anup",
-            "products": list(querysetSort),
+            "products": list(querysetLimit),
             "products1": list(queryset1),
             "products2": list(queryset2),
             "products3": list(queryset3),
@@ -48,5 +51,6 @@ def say_hello(request):
             "customer1Order": customer1Order,
             "minPriceCollection3": minPriceCollection3,
             "earliestProduct": earliestProduct,
+            "querysetLimit": querysetLimit,
         },
     )
