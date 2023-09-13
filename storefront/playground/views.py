@@ -37,20 +37,43 @@ def say_hello(request):
     # limit
     querysetLimit = Product.objects.all()[:5]
     querysetLimit = Product.objects.all()[5:15]
+    # Select fields in query return dictionary
+    querysetSelectFields = Product.objects.values("id", "title", "collection__title")
+    # Select fields in query return tuple
+    querysetSelectFields = Product.objects.values_list(
+        "id", "title", "collection__title"
+    )
+    # Select products that have been ordered and sort them by title
+    productOrder = (
+        OrderItem.objects.values("id", "unit_price", "product__title")
+        .distinct()
+        .order_by("product__title")
+    )
+    productOrder = Product.objects.filter(
+        id__in=OrderItem.objects.values("product_id").distinct()
+    ).order_by("title")
+    # select related inner join with collection table (1)
+    select_related = Product.objects.select_related("collection").all()
+    prefetch_related = Product.objects.prefetch_related("promotions").all()
+    prefetch_related2 = (
+        Product.objects.prefetch_related("promotions")
+        .select_related("collection")
+        .all()
+    )
+
+    # get the last 5 orders with their customer
+    getlast5Orders = (
+        Order.objects.select_related("customer")
+        .prefetch_related("orderitem_set__product")
+        .all()
+        .order_by("-placed_at")[:5]
+    )
     return render(
         request,
         "hello.html",
         {
             "name": "Anup",
-            "products": list(querysetLimit),
-            "products1": list(queryset1),
-            "products2": list(queryset2),
-            "products3": list(queryset3),
-            "totalOrder": orderCount,
-            "product1Sold": product1Sold,
-            "customer1Order": customer1Order,
-            "minPriceCollection3": minPriceCollection3,
-            "earliestProduct": earliestProduct,
-            "querysetLimit": querysetLimit,
+            "products": list(select_related),
+            "result": list(getlast5Orders),
         },
     )

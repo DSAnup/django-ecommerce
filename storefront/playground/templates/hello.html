@@ -13,9 +13,23 @@
     {% else %}
     <h1>Hello World</h1>
     {% endif %}
-    <ul>
+    <!-- <ul>
         {% for product in products %}
-        <li>{{product.title}}</li>
+        <li>{{product.title}} - {{product.collection.title}}</li>
+        {% endfor %}
+    </ul> -->
+    <br>
+
+    <ul>
+        {% for r in result %}
+        <li>
+            {{r.id}} - {{r.customer.first_name}}
+            <ul>
+                {% for book in r.orderitem_set.all %}
+                <li>{{ book.product.title }}</li>
+                {% endfor %}
+            </ul>
+        </li>
         {% endfor %}
     </ul>
 
