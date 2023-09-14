@@ -1,7 +1,20 @@
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-from store.models import Product, Order, OrderItem, Customer
-from django.db.models import Min, Max, Avg, Count, Sum, Q, F, Value
+from store.models import *
+from django.db.models import (
+    Min,
+    Max,
+    Avg,
+    Count,
+    Sum,
+    Q,
+    F,
+    Value,
+    Func,
+    ExpressionWrapper,
+    DecimalField,
+)
+from django.db.models.functions import Concat
 
 # Create your views here.
 
@@ -52,6 +65,7 @@ def say_hello(request):
     productOrder = Product.objects.filter(
         id__in=OrderItem.objects.values("product_id").distinct()
     ).order_by("title")
+
     # select related inner join with collection table (1)
     select_related = Product.objects.select_related("collection").all()
     prefetch_related = Product.objects.prefetch_related("promotions").all()
@@ -70,6 +84,40 @@ def say_hello(request):
     )
     # create new field in template uses
     annonate_object = Customer.objects.annotate(is_new=Value(True), new_id=F("id") + 1)
+    annonate_object_concat = Customer.objects.annotate(
+        # CONCAT
+        full_name=Func(F("first_name"), Value(" "), F("last_name"), function="CONCAT")
+    )
+    annonate_object_concat = Customer.objects.annotate(
+        # CONCAT
+        full_name=Concat("first_name", Value(" "), "last_name")
+    )
+    annonate_object_group_by = Customer.objects.annotate(
+        # CONCAT
+        order_count=Count("order")
+    )
+    discounted_price = ExpressionWrapper(
+        F("unit_price") * 0.8, output_field=DecimalField()
+    )
+    annonate_object_expressionwrapper = Product.objects.annotate(
+        discounted_price=discounted_price
+    )
+    # LIKE Operations
+    customer_with_com_count = Customer.objects.filter(
+        email__icontains=".com"
+    ).aggregate(count=Count("id"))
+    customer_with_com = Customer.objects.filter(email__icontains=".com")
+
+    # collection that don't have featured product
+    collection_dont_featuredproduct = Collection.objects.filter(
+        featured_product__isnull=True
+    )
+    # Products: inventory < 10
+    lowInventory = Product.objects.filter(inventory__lt=10)
+    # Order placed by customer with id = 1
+    OrderPlacedByCustomer1 = Order.objects.filter(customer__id=1)
+    # Order items for products in collection 3
+    OrderItemCollection3 = OrderItem.objects.filter(product__collection__id=3)
     return render(
         request,
         "hello.html",
@@ -77,6 +125,6 @@ def say_hello(request):
             "name": "Anup",
             "products": list(select_related),
             "result": list(getlast5Orders),
-            "result2": list(annonate_object),
+            "result2": list(OrderItemCollection3),
         },
     )
