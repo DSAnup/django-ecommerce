@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-from store.models import Product, Order, OrderItem
-from django.db.models import Min, Max, Avg, Count, Sum, Q, F
+from store.models import Product, Order, OrderItem, Customer
+from django.db.models import Min, Max, Avg, Count, Sum, Q, F, Value
 
 # Create your views here.
 
@@ -61,13 +61,15 @@ def say_hello(request):
         .all()
     )
 
-    # get the last 5 orders with their customer
+    # get the last 5 orders with their customer and products
     getlast5Orders = (
         Order.objects.select_related("customer")
         .prefetch_related("orderitem_set__product")
         .all()
         .order_by("-placed_at")[:5]
     )
+    # create new field in template uses
+    annonate_object = Customer.objects.annotate(is_new=Value(True), new_id=F("id") + 1)
     return render(
         request,
         "hello.html",
@@ -75,5 +77,6 @@ def say_hello(request):
             "name": "Anup",
             "products": list(select_related),
             "result": list(getlast5Orders),
+            "result2": list(annonate_object),
         },
     )
