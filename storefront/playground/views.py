@@ -1,14 +1,25 @@
 from django.shortcuts import render
-from django.core.exceptions import ObjectDoesNotExist
 from store.models import *
 from tags.models import *
-from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 
 # Create your views here.
 
 
 def say_hello(request):
-    Collection.objects.filter(pk=11).delete()
+    # Transaction return roll back if one query is faild
+    with transaction.atomic():
+        order = Order()
+        order.customer_id = 1
+        order.save()
+
+        item = OrderItem()
+        item.order = order
+        item.product_id = 1
+        # item.product_id = -1 Roll back
+        item.quantity = 1
+        item.unit_price = 10
+        item.save()
 
     return render(
         request,
