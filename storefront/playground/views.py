@@ -8,11 +8,12 @@ from django.contrib.contenttypes.models import ContentType
 
 
 def say_hello(request):
-    collection = Collection()
-    collection.title = "Video Games"
-    collection.featured_product = Product(pk=1)
-    collection.save()
-    print(collection.id)
+    # collection = Collection(pk=11)
+    # collection.title = "Games"
+    # collection.featured_product = None
+    # collection.save()
+    # print(collection.id)
+    Collection.objects.filter(pk=11).update(title="Games two")
 
     return render(
         request,
