@@ -8,17 +8,16 @@ from django.contrib.contenttypes.models import ContentType
 
 
 def say_hello(request):
-    tags = TaggedItem.objects.get_tags_for(Product, 1)
-    queryset = Product.objects.all()
-    list(queryset)
-    # using caching
-    queryset[0]
+    collection = Collection()
+    collection.title = "Video Games"
+    collection.featured_product = Product(pk=1)
+    collection.save()
+    print(collection.id)
 
     return render(
         request,
         "hello.html",
         {
             "name": "Anup",
-            "tags": list(tags),
         },
     )
