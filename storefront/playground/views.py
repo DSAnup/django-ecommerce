@@ -9,6 +9,10 @@ from django.contrib.contenttypes.models import ContentType
 
 def say_hello(request):
     tags = TaggedItem.objects.get_tags_for(Product, 1)
+    queryset = Product.objects.all()
+    list(queryset)
+    # using caching
+    queryset[0]
 
     return render(
         request,
