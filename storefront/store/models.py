@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 # Create your models here.
@@ -5,17 +6,17 @@ from django.db import models
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     unit_price = models.DecimalField(
-        max_digits=6, decimal_places=2
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)]
     )  # defined the max digits & decimal digits
     slug = models.SlugField()
-    inventory = models.IntegerField()
+    inventory = models.IntegerField(validators=[MinValueValidator(1)])
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(
         "Collection", on_delete=models.PROTECT
     )  # do not others production
-    promotions = models.ManyToManyField("Promotion")
+    promotions = models.ManyToManyField("Promotion", blank=True)
 
     def __str__(self) -> str:
         return self.title
