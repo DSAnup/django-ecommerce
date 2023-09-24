@@ -14,7 +14,7 @@ class Product(models.Model):
     inventory = models.IntegerField(validators=[MinValueValidator(1)])
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(
-        "Collection", on_delete=models.PROTECT
+        "Collection", on_delete=models.PROTECT, related_name="products"
     )  # do not others production
     promotions = models.ManyToManyField("Promotion", blank=True)
 
