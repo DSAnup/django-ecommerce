@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "store",
     "tags",
     "likes",
-    "store_custom",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -91,7 +91,7 @@ WSGI_APPLICATION = "storefront.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "storefront",
+        "NAME": "storefront2",
         "HOST": "localhost",
         "PORT": 3306,
         "USER": "root",
@@ -146,3 +146,5 @@ REST_FRAMEWORK = {
     # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination", - For all model class pagination
     # "PAGE_SIZE": 10,
 }
+
+AUTH_USER_MODEL = "core.User"
