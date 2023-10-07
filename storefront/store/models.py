@@ -75,6 +75,9 @@ class Order(models.Model):
         max_length=1, choices=PaymentStatusChoices, default=PaymentStatusPending
     )
 
+    class Meta:
+        permissions = [("cancel_order", "Can cancel order")]
+
 
 class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
