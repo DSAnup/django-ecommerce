@@ -3,8 +3,6 @@ from rest_framework import serializers
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
-    birth_date = serializers.DateField(read_only=True)
-
     class Meta(BaseUserCreateSerializer.Meta):
         fields = [
             "id",
