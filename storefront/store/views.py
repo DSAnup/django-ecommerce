@@ -4,9 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import (
     IsAuthenticated,
-    AllowAny,
     IsAdminUser,
-    DjangoModelPermissions,
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -114,3 +112,8 @@ class CustomerViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
