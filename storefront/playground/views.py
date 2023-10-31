@@ -1,4 +1,4 @@
-from django.core.mail import send_mail, mail_admins, BadHeaderError
+from django.core.mail import send_mail, mail_admins, BadHeaderError, EmailMessage
 from django.shortcuts import render
 from store.models import *
 from tags.models import *
@@ -9,8 +9,13 @@ from django.db import transaction
 
 def sendmail(request):
     try:
-        send_mail("success", "hello world", "info@anup.com", ["bob@anup.com"])
-        mail_admins("subject", "message", html_message="message")
+        # send_mail("success", "hello world", "info@anup.com", ["bob@anup.com"])
+        # mail_admins("subject", "message", html_message="message")
+        message = EmailMessage(
+            "subject", "message", "from@moshbuy.com", ["john@wick.com"]
+        )
+        message.attach_file("playground\static\images\kitchen.jpg")
+        message.send()
     except BadHeaderError:
         pass
     return render(
