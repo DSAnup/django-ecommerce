@@ -2,4 +2,8 @@ from django.urls import path
 from . import views
 
 # URLConf
-urlpatterns = [path("hello/", views.say_hello), path("sendmail/", views.sendmail)]
+urlpatterns = [
+    path("hello/", views.say_hello),
+    path("sendmail/", views.sendmail),
+    path("sendmailtemplate/", views.sendmailtemplate),
+]

@@ -3,6 +3,7 @@ from django.shortcuts import render
 from store.models import *
 from tags.models import *
 from django.db import transaction
+from templated_mail.mail import BaseEmailMessage
 
 # Create your views here.
 
@@ -16,6 +17,23 @@ def sendmail(request):
         )
         message.attach_file("playground\static\images\kitchen.jpg")
         message.send()
+    except BadHeaderError:
+        pass
+    return render(
+        request,
+        "hello.html",
+        {
+            "name": "Anup",
+        },
+    )
+
+
+def sendmailtemplate(request):
+    try:
+        message = BaseEmailMessage(
+            template_name="emails/hello.html", context={"name": "Anup"}
+        )
+        message.send(["john@gmail.com"])
     except BadHeaderError:
         pass
     return render(
