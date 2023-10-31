@@ -184,3 +184,5 @@ EMAIL_PORT = 9696
 DEFAULT_FROM_EMAIL = "from@anup.com"
 
 ADMINS = [("Anup", "anup@admin.com")]
+
+CELERY_BROKER_URL = "redis://localhost:6379/1"
