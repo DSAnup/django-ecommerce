@@ -4,8 +4,20 @@ from store.models import *
 from tags.models import *
 from django.db import transaction
 from templated_mail.mail import BaseEmailMessage
+from .tasks import notify_customers
 
 # Create your views here.
+
+
+def say_hello(request):
+    notify_customers.delay("Hello")
+    return render(
+        request,
+        "hello.html",
+        {
+            "name": "Anup",
+        },
+    )
 
 
 def sendmail(request):
@@ -45,7 +57,7 @@ def sendmailtemplate(request):
     )
 
 
-def say_hello(request):
+def say_hellotransaction(request):
     # Transaction return roll back if one query is faild
     with transaction.atomic():
         order = Order()
