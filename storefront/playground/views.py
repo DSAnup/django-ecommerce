@@ -27,7 +27,7 @@ def sendmail(request):
         message = EmailMessage(
             "subject", "message", "from@moshbuy.com", ["john@wick.com"]
         )
-        message.attach_file("playground\static\images\kitchen.jpg")
+        message.attach_file("playground/static/images/kitchen.jpg")
         message.send()
     except BadHeaderError:
         pass
