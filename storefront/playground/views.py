@@ -5,11 +5,29 @@ from tags.models import *
 from django.db import transaction
 from templated_mail.mail import BaseEmailMessage
 from .tasks import notify_customers
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.views import APIView
+import requests
+
 
 # Create your views here.
+class HelloView(APIView):
+    @method_decorator(cache_page(3 * 60))
+    def get(self, request):
+        response = requests.get("https://httpbin.org/delay/2")
+        data = response.json()
+        return render(
+            request,
+            "hello.html",
+            {
+                "name": data,
+            },
+        )
 
 
-def say_hello(request):
+def say_hello2(request):
     notify_customers.delay("Hello")
     return render(
         request,
