@@ -18,6 +18,7 @@ redis = "*"
 django-celery-results = "*"
 celery = "*"
 django-redis = "*"
+whitenoise = "*"
 
 [dev-packages]
 pytest = "*"
